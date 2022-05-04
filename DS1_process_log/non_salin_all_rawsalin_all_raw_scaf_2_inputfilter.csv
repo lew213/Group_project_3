@@ -1,0 +1,7 @@
+ANmax in cohort non_salin_all_raw,10
+ANmax in cohort salin_all_raw,10
+Total sites passing in file,4608290
+Sites with total allele count = 0,	1210448
+Variants fixed in both cohorts,64680
+Non-variant sites,294714
+Variant sites (SNPs),3038448

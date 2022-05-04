@@ -1,0 +1,9 @@
+298	outlier windows for Dxy values of >=0.6298
+298	outlier windows for Fst values of >=0.5824
+298	outlier windows for DD values of <=-0.2382
+	of which are double outliers for:
+162	outlier windows for Dxy values of >=0.6298 and Fst values of >=0.5824
+88	outlier windows for Fst values of >=0.5824 and DD values of <=-0.2382
+82	outlier windows for Dxy values of >=0.6298 and DD values of <=-0.2382
+	of which are triple outliers for:
+64	outlier windows for Dxy values of >=0.6298, Fst values of >=0.5824 and DD values of <=-0.2382
