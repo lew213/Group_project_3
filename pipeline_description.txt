@@ -1,0 +1,65 @@
+#unix commands for student mbxlw2 for christian sailor pipeline 
+
+#GATK data house keeping of vcf's to tables for start of the christian sailor pipeline
+
+./gatk VariantsToTable \
+-V /Users/lewiswood/Desktop/project3datanew/non_saline/Bruc2_populations.vcf \
+-F CHROM -F POS -F AC -F AN \
+-O /Users/lewiswood/Desktop/project3datanew/non_saline/bruc2_raw.table
+
+#note that './' has to be the command prefix in-order to call the gatk program to process vcf to the appropriate tables 
+in addition the command arguments can be found at (gatk) 
+further more the use of '\' allows for commands with multiple steps to be ran in one block
+
+#script DS1 and producing outliers 
+python3 /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/DS1_outliers.py
+ -i /Users/lewiswood/Desktop/project3datanew/ -coh1 non_salin_all_raw -coh2 salin_all_raw -o end -snps 100 -cut 0.5 -per 0.2 -suf _Aa -ploidy 2
+ 
+#when calling script DS1 its important to ensure that the -i is calling tables produced from gatk - therefore ensure that the directory thats being called only contains the nessary tables with 
+the prefix _raw.table 
+
+#ensure -coh1 and -coh2 arguments are appropriate as the files written will be named after these and called on again downstream in the pipeline 
+#the snp window size was set to 100 with cut off points at 0.5 with an allowance of 20 percent of missing data. ploidy was set to 2
+#with the produced outlier file titles ALL it is possible to arrange outliers by fst - the genes above 90% were investigated as possible regions of adaption. 
+
+
+#DS2, G2x and producing candidate gene lists
+
+python3 /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/DS2_genes.py -i /Users/lewiswood/Desktop/endnon_salin_all_rawsalin_all_raw -coh1 non_salin_all_raw -coh2 salin_all_raw \
+ -an /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/models_aed0.5.gff \
+ -gf /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/LyV2_TAIR10orth_des_20150927.txt -ovlp 0.00001 -suf _Aa_
+
+python3 /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/G2x_genes.py -i /Users/lewiswood/Desktop/project3datanew/endnon_salin_all_rawsalin_all_raw \
+ -an /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/models_aed0.5.gff \
+ -gf /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/LyV2_TAIR10orth_des_20150927.txt -ovlp 0.00001 -suf _Aa 
+
+#both scripts produce the same candidate gene lists the annotation on christian sailors pipeline is unclear when specifying how the scripts differ. that said each of the two scripts has different 
+issues and were edited. for this section of the pipeline argument -ovlp was set to 51, 95 and 98 percent as a way of filtering down candidate gene lists to most significant genes.
+
+#for issues with reproducibility for DS2 and G2x it is possible to use the bedtools commands written in the scripts interactively to produce overlaps manually 
+this step was used to originally work around bugs caused by script vocabulary differences.
+
+bedtools intersect -a /Users/lewiswood/Desktop/project3datanew/project3datanewnon_salin_all_rawsalin_all_raw/non_salin_all_rawsalin_all_raw_100SNPs_5000ppm_Fst_outliers_Aa.bed \
+ -b /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/models_aed0.5.gff \
+ -f 1.0000000000000001e-07 -wb | awk '{$1=$2=$3=""; print $4,$5,$6,$7,$8,$9,$10,$11,$12}' | grep transcript
+
+#investigating candidate genes 
+
+#once genes were identified by DS1, DS2 and G2X samtools was used to extract nucleotide sequences at specified regions
+#this was then blasted for homologues 
+#from this step uniprot was then used to investigate the function of the identified candidate gene 
+
+samtools faidx /Users/lewiswood/Desktop/project_3/ref_annotation/BF_ref_redbean.fasta ctg13:1693706-1694983  
+
+#producing graphs with G3_graphs_percentiles and D3_perSNP 
+
+python3 /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/G3_graphs_percentile.py -coh1 non_salin_all_raw -coh2 salin_all_raw \ 
+-geneor /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/Lyrata2genesOriented.out -snps 100 -cut 0.5 -win 50000 \
+ -i /non_salin_all_rawsalin_all_raw -ovlp 0.00001 -outlier ALL -suf _Aa -ploidy 2
+
+#the script G3 was called with the above command and arguemnts to produce graphs - however variables in the r graphs have not been assigned values - therefore in-order to process the data into a 
+interpretable format R scripts have to be further rewritten
+#in-addition to this the D3_perSNP failed due to issues with panda dataframe merging towards the end of the script
+
+#in conclusion the pipeline succeeded in producing outlier and candidate gene lists which where then interpreted by other open source methods. however the pipeline was not used to produced graphs 
+that communicate findings
