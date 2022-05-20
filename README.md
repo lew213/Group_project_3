@@ -24,7 +24,7 @@ python3 /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/G2x_gene
 
  Furthermore, bed tools can also be ran outside of the script to identify overlaps. 	
 
-bedtools intersect -a /Users/lewiswood/Desktop/project3datanew/project3datanewnon_salin_all_rawsalin_all_raw/non_salin_all_rawsalin_all_raw_100SNPs_5000ppm_Fst_outliers_Aa.bed -b /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/models_aed0.5.gff -f 1.0000000000000001e-07 -wb | awk '{$1=$2=$3=""; print $4,$5,$6,$7,$8,$9,$10,$11,$12}' | grep transcript
+bedtools intersect -a /Users/lewiswood/Desktop/project3datanew/project3datanewnon_salin_all_rawsalin_all_raw/non_salin_all_rawsalin_all_raw_100SNPs_5000ppm_Fst_outliers_Aa.bed -b /Users/lewiswood/Desktop/project3datanew/Divergence_Scan-master/models_aed0.5.gff -f 1.0000000000000001e-07 -wb | awk '{$1=$2=$3=""; print $4,$5,$6,$7,$8,$9,$10,$11,$12}' | grep gene
 
 the final script from the pipeline that produced results was GS3__graphs_percentile.py. the script was successful in creating r files with the necessary information to create graphs however missing elements from the r scripts require it to be re-written. In addition to this the r scripts are written with differencing assigned variables from the python code. Therefore, the scripts need to be further edited, however little annotation of the r scripts on the GitHub pipeline page makes this challenging. An attempt was made to cannibalise the AFD calculation portions of the script however due to the amount of information needed to be read into computer memory this was not possible due to the majority of the ram and available disk space on the laptop being taken up by previously created files. 
 
